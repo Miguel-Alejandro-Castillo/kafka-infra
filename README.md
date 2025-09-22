@@ -61,7 +61,7 @@ Sirve como punto de partida para escalar a staging/producción con múltiples br
      ./kafka-topics.sh --bootstrap-server localhost:9092 --create --topic <nombre-topic>
      ```
 
-   - 📌 **Enviar mensajes de prueba**
+   - 📌 **Enviar mensajes a un tópico**
      ```bash
      ./kafka-console-producer.sh --bootstrap-server localhost:9092 --topic <nombre-topic>
      ```
