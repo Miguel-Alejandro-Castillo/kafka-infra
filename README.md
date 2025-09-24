@@ -34,7 +34,7 @@ Sirve como punto de partida para escalar a staging/producción con múltiples br
 
 2. **Arrancar servicios:**
    ```bash
-   docker compose -f docker-compose.dev.yml up -d
+   docker compose -f docker-compose.dev.yaml up -d
    ```
 
 3. **Verificar el contenedor `kafka-broker`:**
@@ -101,27 +101,27 @@ Sirve como punto de partida para escalar a staging/producción con múltiples br
 
 - **Detener y limpiar servicios del compose**
   ```bash
-  docker compose -f docker-compose.dev.yml down
+  docker compose -f docker-compose.dev.yaml down
   ```
 
 ---
 
 ## ⚙️ Configuración incluida
 
-El `docker-compose.dev.yml` utiliza la imagen `apache/kafka:3.9.1` y define un **broker único con KRaft**:
+El `docker-compose.dev.yaml` utiliza la imagen `apache/kafka:3.9.1` y define un **broker único con KRaft**:
 
 - **Listeners:**
   - `PLAINTEXT://0.0.0.0:9092` (clientes)
   - `CONTROLLER://0.0.0.0:9093` (controlador)
 
 - **Advertised listeners:**
-  - `PLAINTEXT://localhost:9092` (para acceso desde host)
+  - `PLAINTEXT://kafka-broker:9092` (para acceso desde host)
 
 - **Roles y KRaft:**
   ```yaml
   KAFKA_PROCESS_ROLES=broker,controller
   KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
-  KAFKA_CONTROLLER_QUORUM_VOTERS="1@localhost:9093"
+  KAFKA_CONTROLLER_QUORUM_VOTERS="1@kafka-broker:9093"
   ```
 
 - **Parámetros de desarrollo:**
@@ -142,14 +142,14 @@ El `docker-compose.dev.yml` utiliza la imagen `apache/kafka:3.9.1` y define un *
 
 ```plaintext
 kafka-infra/
-├── docker-compose.dev.yml
+├── docker-compose.dev.yaml
 └── README.md
 └── LICENSE
 ```
 
 A medida que el proyecto crezca, se pueden añadir:
 
-- `docker-compose.prod.yml`
+- `docker-compose.prod.yaml`
 - Archivos de configuración adicionales
 - Directorios para scripts y utilidades
 
@@ -161,7 +161,7 @@ A medida que el proyecto crezca, se pueden añadir:
 - **Herramientas de observabilidad:** Agregar **Kafdrop / Kafka UI** para inspeccionar topics y consumer groups.  
 - **Schema Registry:** Integrar **Confluent Schema Registry** si usas Avro/Protobuf/JSON Schema.  
 - **Seguridad:** Habilitar **SASL/SSL** para autenticación y cifrado en entornos no locales.  
-- **Producción:** Crear `docker-compose.prod.yml` con:
+- **Producción:** Crear `docker-compose.prod.yaml` con:
   - Volúmenes persistentes mapeados a discos dedicados.
   - Recursos limitados.
   - Redes separadas para clientes y control plane.
