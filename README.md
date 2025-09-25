@@ -5,7 +5,7 @@ Infraestructura dockerizada para **Apache Kafka** en entornos de desarrollo y ba
 ## 📦 Descripción
 
 **kafka-infra** define y gestiona un broker de Apache Kafka usando Docker y Docker Compose.  
-Incluye una configuración lista para desarrollo local con un único broker que actúa también como controlador (KRaft), exponiendo los puertos necesarios para clientes y control plane.  
+Incluye una configuración lista para desarrollo local con un único broker que actúa también como controlador (KRaft), exponiendo los puertos necesarios para clientes y control plane.
 
 Sirve como punto de partida para escalar a staging/producción con múltiples brokers y servicios complementarios.
 
@@ -17,10 +17,11 @@ Sirve como punto de partida para escalar a staging/producción con múltiples br
 - **Docker Compose:** Incluido en Docker Desktop (o `docker compose` plugin).
 - **WSL2 en Windows:** [Guía oficial](https://learn.microsoft.com/windows/wsl/install)
 - **Puertos libres:** 
-  - **9092:** Tráfico de clientes.
+  - **9092:** Tráfico desde otros contenedores.
   - **9093:** Listener del controlador.
+  - **9094:** Tráfico local desde el host local.
 
-> 💡 **Sugerencia:** verifica que no haya procesos ocupando 9092/9093 antes de levantar la infraestructura.
+> 💡 **Sugerencia:** verifica que no haya procesos ocupando 9092/9093/9094 antes de levantar la infraestructura.
 
 ---
 
@@ -111,11 +112,12 @@ Sirve como punto de partida para escalar a staging/producción con múltiples br
 El `docker-compose.dev.yaml` utiliza la imagen `apache/kafka:3.9.1` y define un **broker único con KRaft**:
 
 - **Listeners:**
-  - `PLAINTEXT://0.0.0.0:9092` (clientes)
+  - `PLAINTEXT://0.0.0.0:9092` (clientes contenedores)
   - `CONTROLLER://0.0.0.0:9093` (controlador)
-
+  - `PLAINTEXT_LOCALHOST://0.0.0.0:9094` (clientes local)
 - **Advertised listeners:**
-  - `PLAINTEXT://kafka-broker:9092` (para acceso desde host)
+  - `PLAINTEXT://kafka-broker:9092` (para acceso desde contenedores)
+  - `PLAINTEXT_LOCALHOST://localhost:9094` (para acceso desde host)
 
 - **Roles y KRaft:**
   ```yaml
@@ -142,9 +144,11 @@ El `docker-compose.dev.yaml` utiliza la imagen `apache/kafka:3.9.1` y define un 
 
 ```plaintext
 kafka-infra/
+├── .dockerignore
 ├── docker-compose.dev.yaml
+├── LICENSE
+├── README.Docker.md
 └── README.md
-└── LICENSE
 ```
 
 A medida que el proyecto crezca, se pueden añadir:
